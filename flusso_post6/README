@@ -1,0 +1,6 @@
+fill = 250
+nIterazioni_sincrone = 10
+carico iniziale: 1 particella per nodo
+carico finale: 9 particelle per nodo
+
+capacità di trasporto: 5

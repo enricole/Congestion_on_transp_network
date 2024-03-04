@@ -1,0 +1,6 @@
+load = 100
+nIterazioni_sincrone = 100
+carico iniziale: 1 particella per nodo
+carico finale: 9 particelle per nodo
+
+capacità di trasporto: 1

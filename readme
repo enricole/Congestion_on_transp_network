@@ -1,0 +1,4 @@
+Leggi graphDynamics.cpp:223 per vedere come medio sulle iterazioni.
+Trovi la sua chiamata in main.cpp alla fine delle iterazioni, una volta che sono stati misurati i flussi.
+Leggi graphDynamics.cpp:251 per la misura di Rho.
+Trovi la sua chiamata in mainRho.cpp a inzio iterazione.

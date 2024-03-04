@@ -1,0 +1,9 @@
+load = 100
+nIterazioni_sincrone = 100
+carico iniziale: 1 particella per nodo
+carico finale: 9 particelle per nodo
+
+capacità di trasporto: 5
+
+Dentro a updatePopulation() la transizione è neutralizzata se il nodo di arrivo è
+congestionato nella corrente iterazione, e non quella precedente(come è sempre stato fin'ora).
