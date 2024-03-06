@@ -1,0 +1,10 @@
+FILL: 250
+
+ini pop: 0
+fin pop: 9
+
+nIter sincrone: 100
+
+
+In questo caso calcoliamo la deviazione standard della popolazione dei nodi. Il metodo usato è 
+getNodeDeviation().

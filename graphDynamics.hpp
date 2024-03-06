@@ -31,7 +31,7 @@ public:
   // Elimina tutti gli elementi del vettore population tranne l'ultimo
   void clearPopulation();
   // Fornisce un vettore contenente i nomi di tutti i nodi non-vuoti
-  std::vector<int> findEmptyableNodes(int load);
+  std::vector<int> findEmptyableNodes();
   // Carica o scarica la rete in base a quale momento della simulazione ci
   // troviamo
   void fillPopulation(const int i, int nNode, int nPart, int nIter_Load, int load);
@@ -48,11 +48,20 @@ public:
   // Effettua lo scambio probabilistico fra due nodi
   void updatePopulation(const std::vector<double> &probs, double rand,
                        int myNode, const std::vector<int> &neigh_labels);
+
+  // FLUX MEASURES
   // Svuota il vettore di flusso
   void clearFluxHistory(int nIter);
   // Fa una media fra tutti i flussi misurati nella corrente iterazione
   int getAverageFlux(int nIter);
+  int getAverageFlux(int nIter, int start, int end);
+  // synchronous version
+  double getStdDeviation(int nIter);
+  // asynchronous version
+  double getStdDeviation(int nIter, int nNode);
   std::vector<int> getFluxHistory() { return fluxHistory; }
+
+  // DENSITY DISTRIBUTION MEAUSRES
   // Svuota il vettore contenente le misure di RHO(n)
   void clearRhoHistory();
   // std::vector<int> nodesOverCapacity();
@@ -61,7 +70,11 @@ public:
   std::vector<long double> getRhoHistory() { return rhoHistory; }
   // Misura lo scarto
   std::vector<long double> getMeanDistribution(int start, int end);
+  // To get the deviation between a set of iteration and the next one
   std::vector<long double> getDeviations(int coefficient);
+  // Standard deviation calculated from the single nodes
+  double getNodeDeviation(std::vector<double>& stdDeviations);
+  int countCongested();
 
 };
 #endif

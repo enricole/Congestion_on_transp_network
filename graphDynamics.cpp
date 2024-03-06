@@ -60,17 +60,20 @@ void GraphDynamics::clearPopulation() {
   population.erase(population.begin(), population.end() - 1);
 }
 
-std::vector<int> GraphDynamics::findEmptyableNodes(int load) {
+std::vector<int> GraphDynamics::findEmptyableNodes() {
   int index = lastIndex(population);
   std::vector<int> emptyableNodes;
-  for (int i = 0; i < population[index].size(); ++i) {
-    if (population[index][i] >= load) {
+  int nNode = population[index].size();
+  for (int i = 0; i < nNode; ++i) {
+    if (population[index][i] > 0 && population[index][i] < capacity) {
       emptyableNodes.push_back(i);
     }
   }
   for (int i = 0; i < emptyableNodes.size(); ++i) {
     int node = emptyableNodes[i];
-    if (population[index][node] < load) {
+    if (population[index][node] == 0 || population[index][node] >= capacity) {
+      std::cerr << "nodo: " << node << "\n";
+      std::cerr << "popolazione: " << population[index][node] << "\n";
       throw std::runtime_error{"findEmptyableNodes didn't work."};
     }
   }
@@ -128,10 +131,23 @@ void GraphDynamics::fillPopulation(const int i, const int nNode, int nPart,
     }
   } else {
     for (int k = 0; k < load; ++k) {
-      do {
-        node = int_distr(gen);
-      } while (population[index][node] == 0);
-      population[index][node] -= 1;  
+      std::cout << "k: " << k << "\n"; 
+      std::vector<int> emptyableNodes = findEmptyableNodes();
+      std::cout << "size: " << emptyableNodes.size() << "\n";
+      if (emptyableNodes.size() != 0) {
+        std::uniform_int_distribution<int> empty_distr(0, emptyableNodes.size() - 1);
+        int i = empty_distr(gen);//qui
+        std::cout << "i: " << i << "\n";
+        node = emptyableNodes[i]; 
+        population[index][node] -= 1;
+      } else {
+        do {
+          node = int_distr(gen);
+        } while ( population[index][node] == 0);// || population[index][node] >= capacity );
+        population[index][node] -= 1;  
+      }
+      // std::cout << "k: " << k << "\n";      
+      // std::cout << "nodo svuotato\n";
     }
     
     int sum = sumPopulation();
@@ -300,6 +316,46 @@ int GraphDynamics::getAverageFlux(int nIter) {
   }
   return int(sum / nIter);
 }
+
+int GraphDynamics::getAverageFlux(int nIter, int start, int end) {
+  int sum = 0;
+  start -= 1;
+  end -= 1;
+  for (int i = start; i < end; ++i) {
+    sum += fluxHistory[i];
+  }
+  return int(sum / nIter);
+}
+
+double GraphDynamics::getStdDeviation(int nIter) {
+  double deviation = 0.;
+  int size = fluxHistory.size();
+  int mean = getAverageFlux(nIter);
+  for (int i = 0; i < size; ++i) {
+    int dev = mean - fluxHistory[i];
+    deviation += pow(dev, 2);
+  }
+  deviation /= nIter;
+  deviation = sqrt(deviation);
+  return deviation;
+}
+
+double GraphDynamics::getStdDeviation(int nIter, int nNode) {
+  double deviation = 0.;
+  int size = fluxHistory.size() / nNode;
+  int mean = getAverageFlux(nIter);
+  for (int i = 0; i < size; ++i) {
+    int start = i * nNode;
+    int end = start + nNode - 1;
+    int ith_flux = getAverageFlux(nNode, start, end);
+    int dev = mean - ith_flux;
+    deviation += pow(dev, 2);
+  }
+  deviation /= nIter;
+  deviation = sqrt(deviation);
+  return deviation;
+}
+
 // Svuota il vettore storia e lo reinizializza
 void GraphDynamics::clearRhoHistory() {
   rhoHistory.clear();
@@ -379,6 +435,43 @@ std::vector<long double> GraphDynamics::getDeviations(int coefficient) {
   }
   
   return deviations;
+}
+
+double GraphDynamics::getNodeDeviation(std::vector<double>& stdDeviations) {
+  int nNode = population[0].size(); 
+  int nIter = population.size();
+  // Calculate the mean population for every node
+  std::vector<double> meanPopulations(nNode, 0.);
+  for (int i = 0; i < nNode; ++i) {
+    for (int j = 0; j < nIter; ++j) {
+      meanPopulations[i] += population[j][i];
+    }
+    meanPopulations[i] /= nIter;
+  }
+  // Calculate the standard deviation for every node
+  for (int i = 0; i < nNode; ++i) {
+    for (int j = 0; j < nIter; ++j) {
+      double dev = population[j][i] - meanPopulations[i];
+      stdDeviations[i] += pow(dev, 2);
+    }
+    stdDeviations[i] /= nIter;
+    stdDeviations[i] = sqrt(stdDeviations[i]);
+  }
+  double totalDev = std::accumulate(stdDeviations.begin(), stdDeviations.end(), 0);
+  totalDev /= nNode;
+  return totalDev;
+}
+
+int GraphDynamics::countCongested() {
+  int index = lastIndex(population);
+  int nNode = population.size();
+  int count = 0;
+  for (int i = 0; i < nNode; ++i) {
+    if (population[index][i] == capacity) {
+      ++count;
+    }
+  }
+  return count;
 }
 
 // Prova a fare le medie di flusso sugli stati stazionari per vedere che il fenomeno di isteresi si neutralizza.

@@ -1,0 +1,9 @@
+fill = 250
+nIterazioni_sincrone = 10
+carico iniziale: 0 particella per nodo
+carico finale: 9 particelle per nodo
+
+capacità di trasporto: 5
+
+In questo caso durante la fase di scaricamento della rete, 
+non vengono scaricati i nodi vuoti e quelli congestionati.
