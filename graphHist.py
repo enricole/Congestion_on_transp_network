@@ -27,12 +27,12 @@ def plot_histogram(intervals, counts):
     plt.ylabel('Occurence')
     plt.xticks(interval_midpoints, intervals[:-1], rotation=45)  # Set x-ticks to interval midpoints and labels to interval start points
     plt.grid(True)
-    plt.savefig('SyncHist_39.png')  # Save the plot as 'histogram.png' in the current directory
+    plt.savefig('AsyncHist_1.png')  # Save the plot as 'histogram.png' in the current directory
     plt.show()
 
 def main():
     # Replace 'data.csv' with the path to your CSV file
-    filename = 'SyncHist_39.csv'
+    filename = 'AsyncHist_1.csv'
     
     # Define intervals
     intervals = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9]  # Adjust intervals as needed

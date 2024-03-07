@@ -17,5 +17,5 @@
         "specialfunctions": "cpp",
         "splines": "cpp"
     },
-    "cmake.sourceDirectory": "C:/Users/admin/Documents/GitHub/RandomGraph/eigen/bench/btl/libs/BLAS"
+    "cmake.sourceDirectory": "C:/Users/admin/Documents/GitHub/Hysteresis_on_transp_network/eigen/bench/btl"
 }

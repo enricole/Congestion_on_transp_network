@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load the data from CSV
-df = pd.read_csv("SyncHist_10.csv")
+df = pd.read_csv("SyncHist_1.csv")
 
 # Extracting data from the DataFrame
 Occurence = df[' Occurence']
@@ -25,5 +25,5 @@ plt.title('Occurences vs Deviations')
 plt.grid(True)
 
 # Saving and showing the plot
-plt.savefig('SyncHist_10.png')
+plt.savefig('SyncHist_1.png')
 plt.show()

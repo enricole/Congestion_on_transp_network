@@ -89,12 +89,15 @@ void printFluxOut(const std::vector<T> &vector, std::string fname,
   if (output_file.is_open()) {
     output_file << gname << "\n";
     for (size i = 0; i < vector.size(); ++i) {
-      if (i <= vector.size() / 2) {
-        output_file << i << ", " << vector[i] << "\n";
-      } else {
-        int j = vector.size() - i - 1;
-        output_file << j << ", " << vector[i] << "\n";
-      }
+      // if (i <= vector.size() / 2) {
+      //   output_file << i << ", " << vector[i] << "\n";
+      // } else {
+      //   int j = vector.size() - i - 1;
+      //   output_file << j << ", " << vector[i] << "\n";
+      // }
+
+      output_file << i << ", " << vector[i] << "\n";
+    
     }
   }
 }
@@ -146,64 +149,7 @@ void slowPrintFluxOut(const std::vector<T> &vector, int start_unloading, std::st
   }
 }
 
-template <typename T>
-void printDevHistOut(const std::vector<T> &stdDeviations, std::string fname,
-                  std::string gname) { // std::to_string(something you wnat
-                                       // ot write at run time)
-  std::vector<int> devHist(20, 0);
-  for (size i = 0; i < stdDeviations.size(); ++i) {
-    if (stdDeviations[i] > 0. && stdDeviations[i] <= 0.5) {
-      devHist[0]++;
-    } else if (stdDeviations[i] > 0.5 && stdDeviations[i] <= 1.) {
-      devHist[1]++;
-    } else if (stdDeviations[i] > 1. && stdDeviations[i] <= 1.5) {
-      devHist[2]++;
-    } else if (stdDeviations[i] > 1.5 && stdDeviations[i] <= 2) {
-      devHist[3]++;
-    } else if (stdDeviations[i] > 2 && stdDeviations[i] <= 2.5) {
-      devHist[4]++;
-    } else if (stdDeviations[i] > 2.5 && stdDeviations[i] <= 3.) {
-      devHist[5]++;
-    } else if (stdDeviations[i] > 3. && stdDeviations[i] <= 3.5) {
-      devHist[6]++;
-    } else if (stdDeviations[i] > 3.5 && stdDeviations[i] <= 4.) {
-      devHist[7]++;
-    } else if (stdDeviations[i] > 4. && stdDeviations[i] <= 4.5) {
-      devHist[8]++;
-    } else if (stdDeviations[i] > 4.5 && stdDeviations[i] <= 5.) {
-      devHist[9]++;
-    } else if (stdDeviations[i] > 5. && stdDeviations[i] <= 5.5) {
-      devHist[10]++;
-    } else if (stdDeviations[i] > 5.5 && stdDeviations[i] <= 6.){
-      devHist[11]++;
-    } else if (stdDeviations[i] > 6. && stdDeviations[i] <= 6.5) {
-      devHist[12]++;
-    } else if (stdDeviations[i] > 6.5 && stdDeviations[i] <= 7.) {
-      devHist[13]++;
-    } else if (stdDeviations[i] > 7. && stdDeviations[i] <= 7.5) {
-      devHist[14]++;
-    } else if (stdDeviations[i] > 7.5 && stdDeviations[i] <= 8.) {
-      devHist[15]++;
-    } else if (stdDeviations[i] > 8. && stdDeviations[i] <= 8.5) {
-      devHist[16]++;
-    } else if (stdDeviations[i] > 8.5 && stdDeviations[i] <= 9.) {
-      devHist[17]++;
-    } else if (stdDeviations[i] > 9. && stdDeviations[i] <= 9.5) {
-      devHist[18]++;
-    } else if (stdDeviations[i] > 9.5 && stdDeviations[i] <= 10.) {
-      devHist[19]++;
-    } else {
-      std::cout << "above\n";
-    }
-  }
-  std::ofstream output_file(fname);
-  if (output_file.is_open()) {
-    output_file << gname << "\n";
-    for (size i = 0; i < devHist.size(); ++i) {
-      output_file << i << ", " << devHist[i] << "\n";
-    }
-  }
-}
+
 
 template <typename T>
 void printHistOut(const std::vector<T> &stdDeviations, std::string fname,
@@ -290,7 +236,7 @@ int main() {
   asynchronous_totalFluxHistory.reserve(nIter_Load + 1);
   std::cout << "Finished asynchronous initilization\n\n";
 
-  for (int i = 0; i < nIter_Load / 2; ++i) {
+  for (int i = 0; i < nIter_Load / 2 + 2; ++i) {
     /////////////////////////////////////////////////////////
     // Synchronous dynamics
     /////////////////////////////////////////////////////////
@@ -344,113 +290,118 @@ int main() {
     // double average_syncDeviation = synchronous_dynamics.getStdDeviation(nIter_synchronous);
     double average_syncDeviation = synchronous_dynamics.getNodeDeviation(sync_stdDeviations);
     std::cout << "sync std deviation: " << average_syncDeviation << "\n";
-    std::string string = "SyncHist_.csv";
-    string.insert(9, std::to_string(i));
-    // printDevHistOut(sync_stdDeviations, string, "Deviation, Occurence");
-    printHistOut(sync_stdDeviations, string, "Deviation");
+    // std::string string = "SyncHist_.csv";
+    // string.insert(9, std::to_string(i));
+    // printHistOut(sync_stdDeviations, string, "Deviation");
 
-    synchronous_deviations.push_back(average_syncDeviation);
-    synchronous_totalFluxHistory.push_back(average_flux);
-    synchronous_dynamics.clearFluxHistory(nIter_synchronous);
+    // synchronous_deviations.push_back(average_syncDeviation);
+    // synchronous_totalFluxHistory.push_back(average_flux);
+    // synchronous_dynamics.clearFluxHistory(nIter_synchronous);
     std::cout << "Synchornous Dynamics finished. \n";
 
     /////////////////////////////////////////////////////////
     // Asynchronous dynamics
     /////////////////////////////////////////////////////////
-    // asynchronous_dynamics.clearPopulation();
-    // // Normal case
-    // asynchronous_dynamics.fillPopulation(i, nNode, nPart, nIter_Load, load);
-    // std::cout << "filled\n";
-    // // Slow unloading
-    // // asynchronous_dynamics.fillPopulation(i, nNode, nPart, start_unloading, fill_load, empty_load);
-    // // nIter_asynchronous = nIter_synchronous * nNode;
+    asynchronous_dynamics.clearPopulation();
+    // Normal case
+    asynchronous_dynamics.fillPopulation(i, nNode, nPart, nIter_Load, load);
+    std::cout << "filled\n";
+    // Slow unloading
+    // asynchronous_dynamics.fillPopulation(i, nNode, nPart, start_unloading, fill_load, empty_load);
+    // nIter_asynchronous = nIter_synchronous * nNode;
+    std::vector<double> async_stdDeviations(nNode, 0.);
 
-    // for (int ind = 0; ind < nIter_asynchronous; ++ind) {
+    for (int ind = 0; ind < nIter_asynchronous; ++ind) {
 
-    //   asynchronous_dynamics.createNewState();
-    //   std::random_device rd;
-    //   std::mt19937 gen_asynchronous(rd());
-    //   std::uniform_int_distribution<int> int_distr(0, nNode - 1);
-    //   std::uniform_real_distribution<double> real_distr(0.0, 1.0);
-    //   std::vector<int> non_empty_nodes;
-    //   non_empty_nodes.reserve(nNode);
-    //   for (int node = 0; node < nNode; ++node) {
-    //     int pop = asynchronous_dynamics.getNodePopulation(node);
-    //     if (pop != 0) {
-    //       non_empty_nodes.push_back(node);
-    //     }
-    //   }
-    //   // Apply Markov dynamics if there are particles
-    //   if (!non_empty_nodes.empty()) {
-    //     std::uniform_int_distribution<int> non_empty_distr(
-    //         0, non_empty_nodes.size() - 1);
-    //     int myNode = non_empty_nodes[non_empty_distr(gen_asynchronous)];
+      asynchronous_dynamics.createNewState();
+      std::random_device rd;
+      std::mt19937 gen_asynchronous(rd());
+      std::uniform_int_distribution<int> int_distr(0, nNode - 1);
+      std::uniform_real_distribution<double> real_distr(0.0, 1.0);
+      std::vector<int> non_empty_nodes;
+      non_empty_nodes.reserve(nNode);
+      for (int node = 0; node < nNode; ++node) {
+        int pop = asynchronous_dynamics.getNodePopulation(node);
+        if (pop != 0) {
+          non_empty_nodes.push_back(node);
+        }
+      }
+      // Apply Markov dynamics if there are particles
+      if (!non_empty_nodes.empty()) {
+        std::uniform_int_distribution<int> non_empty_distr(
+            0, non_empty_nodes.size() - 1);
+        int myNode = non_empty_nodes[non_empty_distr(gen_asynchronous)];
 
-    //     std::vector<int> neigh_labels =
-    //         graph.getNeighbours(myNode); // extract vector of neighboring rows
-    //                                      // of myNode
-    //     double rand_real = real_distr(gen_asynchronous);
-    //     std::vector<double> trans_probs = transitionMatrix[myNode];
+        std::vector<int> neigh_labels =
+            graph.getNeighbours(myNode); // extract vector of neighboring rows
+                                         // of myNode
+        double rand_real = real_distr(gen_asynchronous);
+        std::vector<double> trans_probs = transitionMatrix[myNode];
 
-    //     // move particle from myNode
-    //     int myNodePop = asynchronous_dynamics.getNodePopulation(myNode);
-    //     if (myNodePop > transport_Treshold) {
-    //       myNodePop = transport_Treshold;
-    //       for (int p = 0; p < myNodePop; ++p) {
-    //         double rand_real = real_distr(gen_asynchronous);
-    //         asynchronous_dynamics.updatePopulation(trans_probs, rand_real, myNode,
-    //                                                neigh_labels);
-    //       }
-    //     } else {
-    //       for (int p = 0; p < myNodePop; ++p) {
-    //         double rand_real = real_distr(gen_asynchronous);
-    //         asynchronous_dynamics.updatePopulation(trans_probs, rand_real, myNode,
-    //                                                neigh_labels);
-    //       }
-    //     }
-    //   }
-    // }
-    // // congestedCount = asynchronous_dynamics.countCongested();
-    // // asynchronous_congested.push_back(congestedCount);
-    // int average_flux2 = asynchronous_dynamics.getAverageFlux(nIter_synchronous);
-    // double average_asyncDeviation = asynchronous_dynamics.getStdDeviation(nIter_synchronous, nNode);
-    // std::cout << "async std deviation: " << average_asyncDeviation << "\n";
-    // asynchronous_deviations.push_back(average_asyncDeviation);
-    // // std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    // asynchronous_totalFluxHistory.push_back(average_flux2);
-    // asynchronous_dynamics.clearFluxHistory(nIter_asynchronous);
-    // std::cout << "Asynchornous Dynamics finished. \n\n";
+        // move particle from myNode
+        int myNodePop = asynchronous_dynamics.getNodePopulation(myNode);
+        if (myNodePop > transport_Treshold) {
+          myNodePop = transport_Treshold;
+          for (int p = 0; p < myNodePop; ++p) {
+            double rand_real = real_distr(gen_asynchronous);
+            asynchronous_dynamics.updatePopulation(trans_probs, rand_real, myNode,
+                                                   neigh_labels);
+          }
+        } else {
+          for (int p = 0; p < myNodePop; ++p) {
+            double rand_real = real_distr(gen_asynchronous);
+            asynchronous_dynamics.updatePopulation(trans_probs, rand_real, myNode,
+                                                   neigh_labels);
+          }
+        }
+      }
+    }
+    // congestedCount = asynchronous_dynamics.countCongested();
+    // asynchronous_congested.push_back(congestedCount);
+    int average_flux2 = asynchronous_dynamics.getAverageFlux(nIter_synchronous);
+    double average_asyncDeviation = asynchronous_dynamics.getNodeDeviation(async_stdDeviations);
+    std::cout << "async std deviation: " << average_asyncDeviation << "\n";
+    std::string astring = "AsyncHist_.csv";
+    astring.insert(10, std::to_string(i));
+    printHistOut(async_stdDeviations, astring, "Deviation");
+    
+    
+    asynchronous_deviations.push_back(average_asyncDeviation);
+    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    asynchronous_totalFluxHistory.push_back(average_flux2);
+    asynchronous_dynamics.clearFluxHistory(nIter_asynchronous);
+    std::cout << "Asynchornous Dynamics finished. \n\n";
   }
   // Synchronous measurement
   std::string strAdd = std::to_string(capacity) + "_" + std::to_string(nIter_Load);
-  std::string strFlux1 = "SyncFlux_.csv";
-  strFlux1.insert(9, strAdd);
-  printFluxOut(synchronous_totalFluxHistory, strFlux1, "Load, Flux");
-  std::string devFlux1 = "SyncDev_.csv";
-  devFlux1.insert(8, strAdd);
-  printFluxOut(synchronous_deviations, devFlux1, "Load, Deviation");
+  // std::string strFlux1 = "SyncFlux_.csv";
+  // strFlux1.insert(9, strAdd);
+  // printFluxOut(synchronous_totalFluxHistory, strFlux1, "Load, Flux");
+  // std::string devFlux1 = "SyncDev_.csv";
+  // devFlux1.insert(8, strAdd);
+  // printFluxOut(synchronous_deviations, devFlux1, "Load, Deviation");
 
-  // std::string strCong1 = "SyncCong_.csv";
-  // strCong1.insert(9, strAdd);
-  // printFluxOut(synchronous_congested, strCong1, "Load, Congested");
-  // slowPrintFluxOut(synchronous_totalFluxHistory, start_unloading , strFlux1, "Load, Flux");
-  std::cout << "synchronous dev: \n";
-  printVector(synchronous_deviations);
+  // // std::string strCong1 = "SyncCong_.csv";
+  // // strCong1.insert(9, strAdd);
+  // // printFluxOut(synchronous_congested, strCong1, "Load, Congested");
+  // // slowPrintFluxOut(synchronous_totalFluxHistory, start_unloading , strFlux1, "Load, Flux");
+  // std::cout << "synchronous dev: \n";
+  // printVector(synchronous_deviations);
 
 
   // Asynchronous measurement
-  // std::string strFlux2 = "AsyncFlux_.csv";
-  // strFlux2.insert(10, strAdd);
-  // printFluxOut(asynchronous_totalFluxHistory, strFlux2, "Load, Flux");
-  // std::string devFlux2 = "AsyncDev_.csv";
-  // devFlux2.insert(8, strAdd);
-  // printFluxOut(asynchronous_deviations, devFlux2, "Load, Deviation");
-  // // std::string strCong2 = "AsyncCong_.csv";
-  // // strCong2.insert(9, strAdd);
-  // // printFluxOut(synchronous_congested, strCong2, "Load, Congested");
-  // // slowPrintFluxOut(asynchronous_totalFluxHistory, start_unloading, strFlux2, "Load, Flux");
-  // std::cout << "asynchronous dev: \n";
-  // printVector(asynchronous_deviations);
+  std::string strFlux2 = "AsyncFlux_.csv";
+  strFlux2.insert(10, strAdd);
+  printFluxOut(asynchronous_totalFluxHistory, strFlux2, "Load, Flux");
+  std::string devFlux2 = "AsyncDev_.csv";
+  devFlux2.insert(8, strAdd);
+  printFluxOut(asynchronous_deviations, devFlux2, "Load, Deviation");
+  // std::string strCong2 = "AsyncCong_.csv";
+  // strCong2.insert(9, strAdd);
+  // printFluxOut(synchronous_congested, strCong2, "Load, Congested");
+  // slowPrintFluxOut(asynchronous_totalFluxHistory, start_unloading, strFlux2, "Load, Flux");
+  std::cout << "asynchronous dev: \n";
+  printVector(asynchronous_deviations);
 
   return 0;
 }

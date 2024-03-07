@@ -2,14 +2,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load the data from CSV
-df = pd.read_csv("SyncDev_20_81.csv")
+df = pd.read_csv("AsyncDev_20_81.csv")
 
 # Extracting data from the DataFrame
 deviation = df[' Deviation']
 Load = df['Load']
 
 # Plotting the data
-plt.figure(figsize=(16, 6), dpi=100)
+plt.figure(figsize=(11, 6), dpi=100)
 plt.plot(Load, deviation, marker='.', linestyle='-', label='Data')
 
 # Generate custom labels for x-axis
@@ -25,5 +25,5 @@ plt.title('Deviations vs Load')
 plt.grid(True)
 
 # Saving and showing the plot
-plt.savefig('SyncDev_20_81.png')
+plt.savefig('AsyncDev_20_81.png')
 plt.show()

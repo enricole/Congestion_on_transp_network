@@ -408,6 +408,7 @@ int removeUnits(int number) {
     return (number / 10) * 10; // Remove units digit by integer division and then multiply by 10
 }
 
+// Calculate the deviation of the distribution of rho
 std::vector<long double> GraphDynamics::getDeviations(int coefficient) {
   int n = population.size() / 3;
   std::cout << "n: " << n << "\n";
@@ -436,7 +437,7 @@ std::vector<long double> GraphDynamics::getDeviations(int coefficient) {
   
   return deviations;
 }
-
+// calculate the deviation for the popo of the single nodes
 double GraphDynamics::getNodeDeviation(std::vector<double>& stdDeviations) {
   int nNode = population[0].size(); 
   int nIter = population.size();

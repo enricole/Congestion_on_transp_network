@@ -103,10 +103,10 @@ int main() {
   int nNode = 500; // Number of vertices in the graph
   int MinLink = 2;
   int MaxLink = 5;
-  int capacity = 10;
+  int capacity = 20;
   int transport_Treshold =
       1; 
-  int l = 5; // load level, equivalent to l*nNode particles in the system
+  int l = 15; // load level, equivalent to l*nNode particles in the system
   // Graph construction
   Graph graph(nNode);
   graph.randGraph(MinLink, MaxLink);
