@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load the data from CSV
-df = pd.read_csv("SyncDeviations_8.csv")
+df = pd.read_csv("AsyncDeviations_8.csv")
 
 # Extracting data from the DataFrame
 deviation = df[' deviation']
@@ -25,5 +25,5 @@ plt.title('Deviations vs Iterations')
 plt.grid(True)
 
 # Saving and showing the plot
-plt.savefig('SyncDeviations_8.png')
+plt.savefig('AsyncDeviations_8.png')
 plt.show()
